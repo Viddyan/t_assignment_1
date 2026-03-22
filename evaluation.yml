@@ -1,0 +1,30 @@
+# .github/workflows/evaluation.yml
+
+name: Evaluation
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  evaluate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run Tests
+        run: npm test || true
+
+      - name: Generate Result
+        run: node generate-result.js
+
+      - name: Send Result
+        run: |
+          curl -X POST http://YOUR_SERVER_IP:5000/api/results \
+          -H "Content-Type: application/json" \
+          -d @result.json
